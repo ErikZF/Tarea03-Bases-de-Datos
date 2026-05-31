@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_server_backend
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=TuPasswordSeguro123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+  sql-init:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: mssql_init_script
+    depends_on:
+      - sqlserver
+    volumes:
+      - ./init.sql:/scripts/init.sql
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        echo "Esperando a SQL Server..."
+        # Usamos $$ para que Docker no crea que es una variable de Fedora
+        for i in {1..60}; do
+          /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P "TuPasswordSeguro123!" -C -Q "SELECT 1" > /dev/null 2>&1
+          if [ $$? -eq 0 ]; then
+            echo "¡Servidor listo! Ejecutando scripts..."
+            /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P "TuPasswordSeguro123!" -C -i /scripts/init.sql
+            echo "¡Configuración finalizada!"
+            exit 0
+          fi
+          echo "Servidor no disponible aún, reintentando ($$i/60)..."
+          sleep 2
+        done
+        exit 1
+
+volumes:
+  mssql_data:
