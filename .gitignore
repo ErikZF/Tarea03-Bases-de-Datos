@@ -1,0 +1,27 @@
+# .NET 
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.swp
+appsettings.Production.json
+appsettings.*.local.json
+
+#  Node / Angular
+node_modules/
+dist/
+.angular/
+*.js.map
+
+#  Docker
+.env
+
+#  OS 
+.DS_Store
+Thumbs.db
+
+# SQL Server
+*.mdf
+*.ldf
+*.bak
