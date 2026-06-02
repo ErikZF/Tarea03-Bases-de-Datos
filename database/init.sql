@@ -15,6 +15,7 @@
 --#####################################################################
 
 :r /scripts/migrations/01_create_tables.sql
+GO
 
 
 --#####################################################################
@@ -22,7 +23,10 @@
 --#####################################################################
 
 :r /scripts/stored_procedure/spInsertarError.sql
+GO
+
 :r /scripts/data/spCargarCatalogosXML.sql
+GO
 
 
 --#####################################################################
@@ -30,11 +34,14 @@
 --#####################################################################
 
 :r /scripts/Trigger/triggerAsociarEmpleadoDeducciones.sql
+GO
 
 
 --#####################################################################
 -- LLENAR CATALOGOS CON XML
 --#####################################################################
 
-EXEC dbo.spCargarCatalogosXML;
+DECLARE @rc INT;
+EXEC dbo.spCargarCatalogosXML @outResultCode = @rc OUTPUT;
+PRINT 'spCargarCatalogosXML result: ' + CAST(@rc AS VARCHAR);
 GO
