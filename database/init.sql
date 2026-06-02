@@ -25,6 +25,12 @@ GO
 :r /scripts/stored_procedure/spInsertarError.sql
 GO
 
+:r /scripts/stored_procedure/spAperturaSemana.sql
+GO
+
+:r /scripts/stored_procedure/spCierreSemanal.sql
+GO
+
 :r /scripts/data/spCargarCatalogosXML.sql
 GO
 
