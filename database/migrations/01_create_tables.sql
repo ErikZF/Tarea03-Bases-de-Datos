@@ -66,9 +66,9 @@ BEGIN
     CREATE TABLE dbo.TipoMovimiento (
         id       INT          NOT NULL
         , Nombre VARCHAR(100) NOT NULL
-        , Accion CHAR(1)      NOT NULL  -- C=credito, D=debito
+        , Accion CHAR(1)      NOT NULL  -- +=credito, -=debito
         , CONSTRAINT PK_TipoMovimiento PRIMARY KEY (id)
-        , CONSTRAINT CHK_TipoMovimiento_Accion CHECK (Accion IN ('C', 'D'))
+        , CONSTRAINT CHK_TipoMovimiento_Accion CHECK (Accion IN ('+', '-'))
     );
 END
 GO
@@ -76,12 +76,14 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'TipoDeduccion' AND schema_id = SCHEMA_ID('dbo'))
 BEGIN
     CREATE TABLE dbo.TipoDeduccion (
-        id               INT           NOT NULL
-        , Nombre         VARCHAR(100)  NOT NULL
-        , EsObligatoria  BIT           NOT NULL
-        , EsPorcentual   BIT           NOT NULL
-        , Valor          DECIMAL(5,4)  NOT NULL CONSTRAINT DF_TipoDeduccion_Valor DEFAULT 0
+        id                  INT           NOT NULL
+        , Nombre            VARCHAR(100)  NOT NULL
+        , EsObligatoria     BIT           NOT NULL
+        , EsPorcentual      BIT           NOT NULL
+        , Valor             DECIMAL(5,4)  NOT NULL CONSTRAINT DF_TipoDeduccion_Valor DEFAULT 0
+        , idTipoMovimiento  INT           NOT NULL
         , CONSTRAINT PK_TipoDeduccion PRIMARY KEY (id)
+        , CONSTRAINT FK_TipoDeduccion_TipoMovimiento FOREIGN KEY (idTipoMovimiento) REFERENCES dbo.TipoMovimiento (id)
     );
 END
 GO
@@ -105,10 +107,10 @@ BEGIN
         id             INT           IDENTITY(1,1) NOT NULL
         , Username     VARCHAR(60)   NOT NULL
         , PasswordHash VARCHAR(256)  NOT NULL
-        , Tipo         TINYINT       NOT NULL  -- 1=admin, 2=empleado
+        , Tipo         VARCHAR(20)   NOT NULL  -- 'administrador' o 'empleado'
         , CONSTRAINT PK_Usuario PRIMARY KEY (id)
         , CONSTRAINT UQ_Usuario_Username UNIQUE (Username)
-        , CONSTRAINT CHK_Usuario_Tipo CHECK (Tipo IN (1, 2))
+        , CONSTRAINT CHK_Usuario_Tipo CHECK (Tipo IN ('administrador', 'empleado'))
     );
 END
 GO
