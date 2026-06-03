@@ -32,6 +32,8 @@ GO
 :r /scripts/StoredProcedures/Planilla/spConsultarPlanillaSemanal.sql
 GO
 
+:r /scripts/StoredProcedures/Planilla/spConsultarDeduccionesSemanal.sql
+GO
 
 
 --#####################################################################
