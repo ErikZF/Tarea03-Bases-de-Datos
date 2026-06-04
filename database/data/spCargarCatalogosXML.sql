@@ -37,11 +37,11 @@ BEGIN TRY
             <TipoDeMovimiento Id="8" Nombre="Embargo judicial" Accion="-" />
         </TiposDeMovimiento>
         <TiposDeDeduccion>
-            <TipoDeDeduccion Id="1" Nombre="Obligatorio de Ley" Obligatorio="1" Porcentual="1" Valor="0.1067" IdTipoMov="4"/>
-            <TipoDeDeduccion Id="2" Nombre="Ahorro Asociacion Solidarista" Obligatorio="0" Porcentual="1" Valor="0.05" IdTipoMov="5" />
-            <TipoDeDeduccion Id="3" Nombre="Ahorro Vacacional" Obligatorio="0" Porcentual="0" Valor="0" IdTipoMov="6"/>
-            <TipoDeDeduccion Id="4" Nombre="Pension Alimenticia" Obligatorio="0" Porcentual="0" Valor="0" IdTipoMov="7"/>
-            <TipoDeDeduccion Id="5" Nombre="Embargo Judicial" Obligatorio="0" Porcentual="0" Valor="0" IdTipoMov="8"/>
+            <TipoDeDeduccion Id="1" Obligatorio="1" Porcentual="1" Valor="0.1067" IdTipoMov="4"/>
+            <TipoDeDeduccion Id="2" Obligatorio="0" Porcentual="1" Valor="0.05" IdTipoMov="5" />
+            <TipoDeDeduccion Id="3" Obligatorio="0" Porcentual="0" Valor="0" IdTipoMov="6"/>
+            <TipoDeDeduccion Id="4" Obligatorio="0" Porcentual="0" Valor="0" IdTipoMov="7"/>
+            <TipoDeDeduccion Id="5" Obligatorio="0" Porcentual="0" Valor="0" IdTipoMov="8"/>
         </TiposDeDeduccion>
         <Usuarios>
             <Usuario pwd="1234" username="Goku" tipo="administrador"/>
@@ -102,7 +102,7 @@ BEGIN TRY
             SELECT
                 T.Item.value('@Id','INT')
                 ,T.Item.value('@Nombre', 'VARCHAR(256)')
-                ,CONVERT(DATE, T.Item.value('@Fecha', 'VARCHAR(8)'), 112)
+                ,T.Item.value('@Fecha', 'DATE')                
             FROM 
                 @xmlData.nodes('/Catalogo/Feriados/Feriado') 
                 AS T(Item)
@@ -137,7 +137,7 @@ BEGIN TRY
             )
             SELECT
                 T.Item.value('@Id', 'INT')
-                ,T.Item.value('@Nombre', 'VARCHAR(100)')
+                ,TM.Nombre
                 ,T.Item.value('@Obligatorio', 'BIT')
                 ,T.Item.value('@Porcentual', 'BIT')
                 ,T.Item.value('@Valor', 'REAL')
@@ -146,7 +146,9 @@ BEGIN TRY
             FROM
                 @xmlData.nodes('/Catalogo/TiposDeDeduccion/TipoDeDeduccion')
                 AS T(Item)
-
+            INNER JOIN dbo.TipoMovimiento AS TM 
+                ON TM.id = T.Item.value('@IdTipoMov', 'INT')
+                
 
             --Insertar Usuarios
             INSERT dbo.Usuario
@@ -203,8 +205,9 @@ BEGIN CATCH
             ,@InErrorLine      = @ErrorLine
             ,@InErrorProcedure = @ErrorProc
             ,@outResultCode    = @outResultCode OUTPUT;
-
-
-
 END CATCH
 END
+GO
+
+DECLARE @outResultCode INT
+EXEC dbo.spCargarCatalogosXML @outResultCode OUTPUT

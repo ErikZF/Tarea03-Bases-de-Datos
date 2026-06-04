@@ -15,7 +15,7 @@ BEGIN TRY
         @FechaInicioSemana DATE = DATEADD(DAY,1, @inFechaJueves)
         , @FechaFinSemana DATE = DATEADD(DAY, 7 ,@inFechaJueves)
         , @idMes INT = NULL
-        , @idSemana DATE  = NULL
+        , @idSemana INT   = NULL
         , @UltimoDiaMes DATE = NULL
         , @FechaFinMes DATE = NULL
         , @NumJueves TINYINT = NULL
