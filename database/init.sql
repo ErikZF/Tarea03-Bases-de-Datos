@@ -38,6 +38,17 @@ GO
 :r /scripts/StoredProcedures/Planilla/spDetallePlanillaMensual.sql
 GO
 
+
+:r /scripts/StoredProcedures/Empleado/spInsertarEmpleado.sql
+GO
+
+:r /scripts/StoredProcedures/Empleado/spEliminarEmpleado.sql
+GO
+
+:r /scripts/StoredProcedures/Empleado/spActualizarEmpleado.sql
+GO
+
+
 --#####################################################################
 -- TRIGGERS
 --#####################################################################
