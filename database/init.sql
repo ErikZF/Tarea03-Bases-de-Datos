@@ -26,9 +26,6 @@ GO
 GO
 
 
-:r /scripts//StoredProcedures/Planilla/spCierreSemanal.sql
-GO
-
 :r /scripts/StoredProcedures/Planilla/spConsultarPlanillaSemanal.sql
 GO
 
@@ -38,7 +35,6 @@ GO
 :r /scripts/StoredProcedures/Planilla/spDetallePlanillaMensual.sql
 GO
 
-
 :r /scripts/StoredProcedures/Empleado/spInsertarEmpleado.sql
 GO
 
@@ -47,6 +43,13 @@ GO
 
 :r /scripts/StoredProcedures/Empleado/spActualizarEmpleado.sql
 GO
+
+:r /scripts/StoredProcedures/Planilla/spAperturaSemana.sql
+GO
+
+:r /scripts/StoredProcedures/Planilla/spCierreSemanal.sql
+GO
+
 
 
 --#####################################################################
