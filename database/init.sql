@@ -7,14 +7,14 @@
 -- CREAR Y USAR DB
 --#####################################################################
 
-:r /scripts/migrations/00_create_database.sql
-
+:r /scripts/Migrations/00_create_database.sql
+GO
 
 --#####################################################################
 -- CREAR TABLAS (incluye DBError)
 --#####################################################################
 
-:r /scripts/migrations/01_create_tables.sql
+:r /scripts/Migrations/01_create_tables.sql
 GO
 
 
@@ -22,17 +22,35 @@ GO
 -- STORED PROCEDURES
 --#####################################################################
 
-:r /scripts/stored_procedure/spInsertarError.sql
+:r /scripts/StoredProcedures/Error/spInsertarError.sql
 GO
 
-:r /scripts/stored_procedure/spAperturaSemana.sql
+:r /scripts/StoredProcedures/Planilla/spAperturaSemana.sql
 GO
 
-:r /scripts/stored_procedure/spCierreSemanal.sql
+:r /scripts/StoredProcedures/Planilla/spCierreSemanal.sql
 GO
 
-:r /scripts/data/spCargarCatalogosXML.sql
+:r /scripts/StoredProcedures/Planilla/spConsultarPlanillaSemanal.sql
 GO
+
+:r /scripts/StoredProcedures/Planilla/spConsultarDeduccionesSemanal.sql
+GO
+
+:r /scripts/StoredProcedures/Planilla/spDetallePlanillaMensual.sql
+GO
+
+
+:r /scripts/StoredProcedures/Empleado/spInsertarEmpleado.sql
+GO
+
+:r /scripts/StoredProcedures/Empleado/spEliminarEmpleado.sql
+GO
+
+:r /scripts/StoredProcedures/Empleado/spActualizarEmpleado.sql
+GO
+
+
 
 
 --#####################################################################
@@ -47,7 +65,5 @@ GO
 -- LLENAR CATALOGOS CON XML
 --#####################################################################
 
-DECLARE @rc INT;
-EXEC dbo.spCargarCatalogosXML @outResultCode = @rc OUTPUT;
-PRINT 'spCargarCatalogosXML result: ' + CAST(@rc AS VARCHAR);
+:r /scripts/Data/spCargarCatalogosXML.sql
 GO

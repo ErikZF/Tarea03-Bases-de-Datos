@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -15,6 +17,33 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+
+  sql-init:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: mssql_init_script
+    depends_on:
+      sqlserver:
+        condition: service_healthy 
+    volumes:
+      - ./Migrations:/scripts/Migrations
+      - ./StoredProcedures/Error:/scripts/StoredProcedures/Error
+      - ./StoredProcedures/Auth:/scripts/StoredProcedures/Auth
+      - ./StoredProcedures/Empleado:/scripts/StoredProcedures/Empleado
+      - ./StoredProcedures/Planilla:/scripts/StoredProcedures/Planilla
+      - ./StoredProcedures/Movimiento:/scripts/StoredProcedures/Movimiento
+      - ./Data:/scripts/Data
+      - ./Trigger:/scripts/Trigger
+      - ./init.sql:/scripts/init.sql
+      
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        echo "¡SQL Server reporta estado SALUDABLE!"
+        echo "Ejecutando scripts de inicialización de inmediato..."
+        /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P "TuPassword123!" -C -i /scripts/init.sql
+        echo "¡Base de datos aprovisionada con éxito!"
+        exit 0
 
 volumes:
   mssql_data:
