@@ -54,6 +54,16 @@ BEGIN TRY
             <TipoEvento Id="4" Nombre="Listar empleados con filtro"/>
             <TipoEvento Id="5" Nombre="Insertar empleado"/>
         </TiposDeEvento>
+        <Departamentos>
+            <Departamento Id="1" Nombre="Operaciones"/>
+            <Departamento Id="2" Nombre="Administración"/>
+            <Departamento Id="3" Nombre="Recursos Humanos"/>
+        </Departamentos>
+        <TiposDeDocumento>
+            <TipoDeDocumento Id="1" Nombre="Cédula de Identidad"/>
+            <TipoDeDocumento Id="2" Nombre="Pasaporte"/>
+            <TipoDeDocumento Id="3" Nombre="DIMEX / Cédula de Residencia"/>
+        </TiposDeDocumento>
         </Catalogo>
         '
         
@@ -178,6 +188,31 @@ BEGIN TRY
                 @xmlData.nodes('/Catalogo/TiposDeEvento/TipoEvento')
                 AS T(Item)
 
+            --Insertar Departamentos
+            INSERT dbo.Departamento
+            (
+                id
+                ,Nombre
+            )
+            SELECT
+                T.Item.value('@Id', 'INT')
+                ,T.Item.value('@Nombre', 'VARCHAR(256)')
+            FROM
+                @xmlData.nodes('/Catalogo/Departamentos/Departamento')
+                AS T(Item)
+
+                --Insertar Tipos de Documento de Identidad
+            INSERT dbo.TipoDocIdentidad
+            (
+                id
+                ,Nombre
+            )
+            SELECT
+                T.Item.value('@Id', 'INT')
+                ,T.Item.value('@Nombre', 'VARCHAR(256)')
+            FROM
+                @xmlData.nodes('/Catalogo/TiposDeDocumento/TipoDeDocumento')
+                AS T(Item)
 
         COMMIT TRANSACTION
 

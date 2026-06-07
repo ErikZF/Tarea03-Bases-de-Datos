@@ -33,6 +33,7 @@ services:
       - ./StoredProcedures/Movimiento:/scripts/StoredProcedures/Movimiento
       - ./Data:/scripts/Data
       - ./Trigger:/scripts/Trigger
+      - ./ETL:/scripts/ETL
       - ./init.sql:/scripts/init.sql
       
     entrypoint:

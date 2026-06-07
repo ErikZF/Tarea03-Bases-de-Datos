@@ -16,13 +16,15 @@ BEGIN TRY
         idTipoEvento
         , idUsuario
         , IP
+        , FechaHora
         , Descripcion
     )
     VALUES (
         @inIdTipoEvento
         , @inIdUsuario
         , @inIP
-        , ISNULL(@idDescripcion, '')
+        , GETUTCDATE()
+        , ISNULL(@inDescripcion, '')
     );
 
 END TRY
