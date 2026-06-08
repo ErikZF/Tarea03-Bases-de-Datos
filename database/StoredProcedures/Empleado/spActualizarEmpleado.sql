@@ -3,7 +3,6 @@ CREATE PROCEDURE dbo.spActualizarEmpleado
      @inIdEmpleado          INT
     , @inValorDocIdentidad  VARCHAR(32)
     , @inNombre             VARCHAR(256)
-    , @inIdDepartamento     INT
     , @inCuentaBancaria     VARCHAR(32)
     , @inIdPuesto           INT
     , @inIdUsuario          INT
@@ -71,25 +70,22 @@ SET NOCOUNT ON
 
     -- ##################### FIN VALIDACIONES #####################
 
-    SELECT 
+    SELECT
         @JSONAntes = CONCAT(
-                '{"ValorDocumento":"', E.ValorDocumento, 
-                '","Nombre":"', E.Nombre, 
-                '","IdPuesto":', E.idPuesto, 
-                ',"IdDepartamento":', E.IdDepartamento, 
+                '{"ValorDocumento":"', E.ValorDocumento,
+                '","Nombre":"', E.Nombre,
+                '","IdPuesto":', E.idPuesto,
                 ',"CuentaBancaria":"', E.CuentaBancaria, '"}'
             )
-    FROM 
+    FROM
         dbo.Empleado AS E
     WHERE
         E.id = @inIdEmpleado
 
-
     SET @JSONDespues = CONCAT(
-                '{"ValorDocumento":"', @inValorDocIdentidad, 
-                '","Nombre":"', @inNombre, 
-                '","IdPuesto":', @inIdPuesto, 
-                ',"IdDepartamento":', @inIdDepartamento, 
+                '{"ValorDocumento":"', @inValorDocIdentidad,
+                '","Nombre":"', @inNombre,
+                '","IdPuesto":', @inIdPuesto,
                 ',"CuentaBancaria":"', @inCuentaBancaria, '"}'
             );
 
@@ -131,10 +127,9 @@ SET NOCOUNT ON
         , E.Nombre = @inNombre
         , E.IdPuesto = @inIdPuesto
         , E.CuentaBancaria = @inCuentaBancaria
-        , E.IdDepartamento = @inIdDepartamento        
     FROM
         dbo.Empleado AS E
-    WHERE  
+    WHERE
         E.id = @inIdEmpleado
 
     INSERT INTO dbo.BitacoraEvento 
