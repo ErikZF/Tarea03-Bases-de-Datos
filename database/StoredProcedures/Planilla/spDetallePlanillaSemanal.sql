@@ -17,7 +17,7 @@ BEGIN TRY
         , TM.Nombre AS TipoMovimiento
         , TM.Accion
         , MP.Monto
-        , MP.SaldoBrutoAcum
+        , MP.NuevoSaldo
     FROM dbo.Comprobante AS C
     INNER JOIN dbo.ComprobanteHora AS CH ON (CH.idComprobante = C.id)
     INNER JOIN dbo.MarcaAsistencia AS MA ON (MA.id = CH.idMarcaAsistencia)

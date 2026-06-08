@@ -28,27 +28,6 @@ END
 GO
 
 
-
-IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'TipoDocIdentidad' AND schema_id = SCHEMA_ID('dbo'))
-BEGIN
-    CREATE TABLE dbo.TipoDocIdentidad (
-        id  INT   NOT NULL
-        , Nombre VARCHAR(60) NOT NULL
-        , CONSTRAINT PK_TipoDocIdentidad PRIMARY KEY (id)
-    );
-END
-GO
-
-IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Departamento' AND schema_id = SCHEMA_ID('dbo'))
-BEGIN
-    CREATE TABLE dbo.Departamento (
-        id  INT NOT NULL
-        , Nombre VARCHAR(100)  NOT NULL
-        , CONSTRAINT PK_Departamento PRIMARY KEY (id)
-    );
-END
-GO
-
 IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'TipoJornada' AND schema_id = SCHEMA_ID('dbo'))
 BEGIN
     CREATE TABLE dbo.TipoJornada (
@@ -134,8 +113,6 @@ BEGIN
     CREATE TABLE dbo.Empleado (
         id                  INT           IDENTITY(1,1) NOT NULL
         , idPuesto          INT           NOT NULL
-        , idDepartamento    INT           NOT NULL
-        , idTipoDocumento   INT           NOT NULL
         , idUsuario         INT           NOT NULL
         , ValorDocumento    VARCHAR(20)   NOT NULL
         , Nombre            VARCHAR(150)  NOT NULL
@@ -144,8 +121,6 @@ BEGIN
         , Activo            BIT           NOT NULL CONSTRAINT DF_Empleado_Activo DEFAULT 1
         , CONSTRAINT PK_Empleado PRIMARY KEY (id)
         , CONSTRAINT FK_Empleado_Puesto        FOREIGN KEY (idPuesto)        REFERENCES dbo.Puesto (id)
-        , CONSTRAINT FK_Empleado_Departamento  FOREIGN KEY (idDepartamento)  REFERENCES dbo.Departamento (id)
-        , CONSTRAINT FK_Empleado_TipoDoc       FOREIGN KEY (idTipoDocumento) REFERENCES dbo.TipoDocIdentidad (id)
         , CONSTRAINT FK_Empleado_Usuario       FOREIGN KEY (idUsuario)       REFERENCES dbo.Usuario (id)
     );
 END
@@ -270,7 +245,7 @@ BEGIN
         , idComprobante     INT            NOT NULL
         , idTipoMovimiento  INT            NOT NULL
         , Monto             DECIMAL(12,2)  NOT NULL
-        , SaldoBrutoAcum    DECIMAL(12,2)  NOT NULL  -- patron saldo-movimiento
+        , NuevoSaldo      DECIMAL(12,2)  NOT NULL  -- patron saldo-movimiento
         , CONSTRAINT PK_MovPlanilla PRIMARY KEY (id)
         , CONSTRAINT FK_MovPlanilla_Comprobante    FOREIGN KEY (idComprobante)    REFERENCES dbo.Comprobante (id)
         , CONSTRAINT FK_MovPlanilla_TipoMovimiento FOREIGN KEY (idTipoMovimiento) REFERENCES dbo.TipoMovimiento (id)

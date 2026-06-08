@@ -175,21 +175,21 @@ BEGIN TRY
         IF (@HorasOrdinarias > 0)
         BEGIN
             SET @SaldoActual = @SaldoActual + @MontoOrdinario;
-            INSERT INTO dbo.MovPlanilla (idComprobante, idTipoMovimiento, Monto, SaldoBrutoAcum)
+            INSERT INTO dbo.MovPlanilla (idComprobante, idTipoMovimiento, Monto, NuevoSaldo)
             VALUES (@idComprobante, 1, @MontoOrdinario, @SaldoActual);
         END;
 
         IF (@HorasExtraNormal > 0)
         BEGIN
             SET @SaldoActual = @SaldoActual + @MontoExtraNormal;
-            INSERT INTO dbo.MovPlanilla (idComprobante, idTipoMovimiento, Monto, SaldoBrutoAcum)
+            INSERT INTO dbo.MovPlanilla (idComprobante, idTipoMovimiento, Monto, NuevoSaldo)
             VALUES (@idComprobante, 2, @MontoExtraNormal, @SaldoActual);
         END;
 
         IF (@HorasExtraDoble > 0)
         BEGIN
             SET @SaldoActual = @SaldoActual + @MontoExtraDoble;
-            INSERT INTO dbo.MovPlanilla (idComprobante, idTipoMovimiento, Monto, SaldoBrutoAcum)
+            INSERT INTO dbo.MovPlanilla (idComprobante, idTipoMovimiento, Monto, NuevoSaldo)
             VALUES (@idComprobante, 3, @MontoExtraDoble, @SaldoActual);
         END;
 
