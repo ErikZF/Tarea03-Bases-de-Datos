@@ -308,15 +308,15 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'BitacoraEvento' AND schema_id = SCHEMA_ID('dbo'))
 BEGIN
     CREATE TABLE dbo.BitacoraEvento (
-        id              INT             IDENTITY(1,1) NOT NULL
-        , idTipoEvento  INT             NOT NULL
-        , idUsuario     INT             NOT NULL
-        , FechaHora     DATETIME        NOT NULL CONSTRAINT DF_BitacoraEvento_FechaHora   DEFAULT GETUTCDATE()
-        , IP            VARCHAR(45)     NOT NULL
-        , Descripcion   NVARCHAR(2000)  NOT NULL CONSTRAINT DF_BitacoraEvento_Descripcion DEFAULT ''
-        , CONSTRAINT PK_BitacoraEvento PRIMARY KEY (id)
-        , CONSTRAINT FK_BitacoraEvento_TipoEvento FOREIGN KEY (idTipoEvento) REFERENCES dbo.TipoEvento (id)
-        , CONSTRAINT FK_BitacoraEvento_Usuario    FOREIGN KEY (idUsuario)    REFERENCES dbo.Usuario (id)
+        Id             INT          IDENTITY(1,1) NOT NULL
+        , IdTipoEvento INT          NOT NULL
+        , Descripcion  VARCHAR(500) NOT NULL
+        , IdPostByUser INT          NOT NULL
+        , PostInIP     VARCHAR(50)  NOT NULL
+        , PostTime     DATETIME     NOT NULL CONSTRAINT DF_BitacoraEvento_PostTime DEFAULT (CAST(GETUTCDATE() AT TIME ZONE 'UTC' AT TIME ZONE 'Central America Standard Time' AS DATETIME))
+        , CONSTRAINT PK_BitacoraEvento            PRIMARY KEY (Id)
+        , CONSTRAINT FK_BitacoraEvento_TipoEvento FOREIGN KEY (IdTipoEvento) REFERENCES dbo.TipoEvento (id)
+        , CONSTRAINT FK_BitacoraEvento_Usuario    FOREIGN KEY (IdPostByUser) REFERENCES dbo.Usuario (id)
     );
 END
 GO

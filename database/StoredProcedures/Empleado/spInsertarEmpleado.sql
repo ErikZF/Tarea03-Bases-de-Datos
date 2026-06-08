@@ -13,88 +13,53 @@ BEGIN TRY
 
     SET @outResultCode = 0
 
-    DECLARE @NombrePuesto       VARCHAR(100) = NULL
-    DECLARE @ParametrosJSON     VARCHAR(1000) = NULL
-
+    DECLARE @ParametrosJSON VARCHAR(500) = NULL
+    DECLARE @_bitacoraRC    INT          = 0
+    DECLARE @_desc          VARCHAR(500) = NULL
 
     -- ##################### VALIDACIONES #####################
-    
-    -- Validar que el nombre sea solo letras y espacios
+
     IF (@inNombre LIKE '%[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]%')
         SET @outResultCode = 50009
 
-    -- Validar que el documento de identidad sea numerico
     ELSE IF (@inValorDocIdentidad LIKE '%[^0-9]%')
         SET @outResultCode = 50010
 
-
-    -- Validar que no exista otro empleado con mismo documento
     ELSE IF EXISTS (
-        SELECT 
-            1
-        FROM   
-            dbo.Empleado AS E
-        WHERE  (E.ValorDocumento = @inValorDocIdentidad)
+        SELECT 1 FROM dbo.Empleado AS E
+        WHERE E.ValorDocumento = @inValorDocIdentidad
     )
         SET @outResultCode = 50004
 
-    -- Validar que no exista otro empleado con mismo nombre
     ELSE IF EXISTS (
-        SELECT 
-            1
-        FROM   
-            dbo.Empleado AS E
-        WHERE  
-            (E.Nombre = @inNombre)
+        SELECT 1 FROM dbo.Empleado AS E
+        WHERE E.Nombre = @inNombre
     )
         SET @outResultCode = 50005
 
-
     -- ##################### FIN VALIDACIONES #####################
 
-    -- Llenar la descripcion del evento con los datos del empleado
     SET @ParametrosJSON = CONCAT(
-                '{"ValorDocumento":"', @inValorDocIdentidad,
-                '","Nombre":"', @inNombre,
-                '","IdPuesto":', @inIdPuesto,
-                ',"CuentaBancaria":"', @inCuentaBancaria, '"}'
-            );
+        '{"ValorDocumento":"', @inValorDocIdentidad,
+        '","Nombre":"', @inNombre,
+        '","IdPuesto":', @inIdPuesto,
+        ',"CuentaBancaria":"', @inCuentaBancaria, '"}'
+    );
 
-
-    -- en caso de que haya fallado el SP en alguna validacion
     IF (@outResultCode <> 0)
     BEGIN
-
-    
-        INSERT INTO dbo.BitacoraEvento 
-    (
-        IdTipoEvento
-        ,idUsuario
-        ,FechaHora
-        ,Descripcion
-        ,IP
-        )
-    VALUES 
-    (
-        5    -- TipoEvento: insercion no exitosa
-        ,@inIdUsuario
-        ,GETUTCDATE()
-        ,CONCAT(
-            'Fallo al insertar empleado, Codigo de Error:'
-            ,@outResultCode
-            ,' Datos: '
-            ,@ParametrosJSON)
-        ,@inIP
-    )
-
+        SET @_desc = CONCAT('Fallo al insertar empleado. Cod:', @outResultCode, ' ', @ParametrosJSON);
+        EXEC dbo.spInsertarBitacoraEvento
+            @inIdTipoEvento  = 5
+            , @inIdUsuario   = @inIdUsuario
+            , @inIP          = @inIP
+            , @inDescripcion = @_desc
+            , @outResultCode = @_bitacoraRC OUTPUT;
         RETURN
     END
-    
 
     BEGIN TRANSACTION
 
-
-    -- Insercion exitosa
     INSERT INTO dbo.Empleado (
         idPuesto
         ,idUsuario
@@ -114,50 +79,39 @@ BEGIN TRY
         , 1
     )
 
-    INSERT INTO dbo.BitacoraEvento (
-        IdTipoEvento
-        ,idUsuario
-        ,FechaHora
-        ,Descripcion
-        ,IP
-    )
-    VALUES 
-    (
-        6 -- TipoEvento: insercion exitosa
-        ,@inIdUsuario
-        ,GETUTCDATE()
-        ,CONCAT('Empleado insertado exitosamente: ', @ParametrosJSON)
-        ,@inIP
-    )
-
+    SET @_desc = CONCAT('Empleado insertado exitosamente: ', @ParametrosJSON);
+    EXEC dbo.spInsertarBitacoraEvento
+        @inIdTipoEvento  = 6
+        , @inIdUsuario   = @inIdUsuario
+        , @inIP          = @inIP
+        , @inDescripcion = @_desc
+        , @outResultCode = @_bitacoraRC OUTPUT;
 
     COMMIT TRANSACTION
 
 END TRY
 BEGIN CATCH
 
-        IF (@@TRANCOUNT > 0)
-        BEGIN
-            ROLLBACK TRANSACTION
-        END
+    IF (@@TRANCOUNT > 0)
+        ROLLBACK TRANSACTION
 
-        SET @outResultCode = 50008
+    SET @outResultCode = 50008
 
-        DECLARE @ErrorNum INT = ERROR_NUMBER()
-        DECLARE @ErrorMsg NVARCHAR(4000) = ERROR_MESSAGE()
-        DECLARE @ErrorSev INT = ERROR_SEVERITY()
-        DECLARE @ErrorStat INT = ERROR_STATE()
-        DECLARE @ErrorLine INT = ERROR_LINE()
-        DECLARE @ErrorProc NVARCHAR(128) = ERROR_PROCEDURE()
+    DECLARE @ErrorNum  INT            = ERROR_NUMBER()
+    DECLARE @ErrorMsg  NVARCHAR(4000) = ERROR_MESSAGE()
+    DECLARE @ErrorSev  INT            = ERROR_SEVERITY()
+    DECLARE @ErrorStat INT            = ERROR_STATE()
+    DECLARE @ErrorLine INT            = ERROR_LINE()
+    DECLARE @ErrorProc NVARCHAR(128)  = ERROR_PROCEDURE()
 
-        EXEC dbo.spInsertarError
-             @InErrorNumber    = @ErrorNum
-            ,@InErrorMessage   = @ErrorMsg
-            ,@InErrorSeverity  = @ErrorSev
-            ,@InErrorState     = @ErrorStat
-            ,@InErrorLine      = @ErrorLine
-            ,@InErrorProcedure = @ErrorProc
-            ,@outResultCode    = @outResultCode OUTPUT
+    EXEC dbo.spInsertarError
+         @InErrorNumber    = @ErrorNum
+        ,@InErrorMessage   = @ErrorMsg
+        ,@InErrorSeverity  = @ErrorSev
+        ,@InErrorState     = @ErrorStat
+        ,@InErrorLine      = @ErrorLine
+        ,@InErrorProcedure = @ErrorProc
+        ,@outResultCode    = @outResultCode OUTPUT
 
 END CATCH
 END

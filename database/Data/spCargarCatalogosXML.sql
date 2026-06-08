@@ -8,7 +8,7 @@ BEGIN
 
         DECLARE @xmlData XML;
         SELECT @xmlData = CAST(BulkColumn AS XML)
-        FROM OPENROWSET(BULK '/scripts/Data/Catalogos.xml', SINGLE_BLOB) AS x;
+        FROM OPENROWSET(BULK '/scripts/data/catalogos.xml', SINGLE_BLOB) AS x;
 
         BEGIN TRANSACTION;
 

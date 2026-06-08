@@ -50,30 +50,24 @@ BEGIN CATCH
 
     IF @@TRANCOUNT > 0
         ROLLBACK TRANSACTION;
-        
 
-    INSERT INTO dbo.DBError
-    (
-        UserName
-        ,Number
-        ,State
-        ,Severity
-        ,Line
-        ,[Procedure]
-        ,Message
-    )
-    VALUES
-    (
-        SUSER_SNAME()
-        , ERROR_NUMBER()
-        , ERROR_STATE()
-        , ERROR_SEVERITY()
-        , ERROR_LINE()
-        , ISNULL(ERROR_PROCEDURE(), 'spConsultarPlanillaSemanal')
-        , ERROR_MESSAGE()
-    )
-    
-    SET @outResultCode = 50005; 
+    SET @outResultCode = 50008;
+
+    DECLARE @ErrorNum  INT            = ERROR_NUMBER();
+    DECLARE @ErrorMsg  NVARCHAR(4000) = ERROR_MESSAGE();
+    DECLARE @ErrorSev  INT            = ERROR_SEVERITY();
+    DECLARE @ErrorStat INT            = ERROR_STATE();
+    DECLARE @ErrorLine INT            = ERROR_LINE();
+    DECLARE @ErrorProc NVARCHAR(128)  = ERROR_PROCEDURE();
+
+    EXEC dbo.spInsertarError
+         @InErrorNumber    = @ErrorNum
+        ,@InErrorMessage   = @ErrorMsg
+        ,@InErrorSeverity  = @ErrorSev
+        ,@InErrorState     = @ErrorStat
+        ,@InErrorLine      = @ErrorLine
+        ,@InErrorProcedure = @ErrorProc
+        ,@outResultCode    = @outResultCode OUTPUT;
 
 END CATCH
 END
