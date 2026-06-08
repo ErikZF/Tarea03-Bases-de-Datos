@@ -6,155 +6,14 @@ BEGIN
     BEGIN TRY
         SET @outResultCode = 0;
 
-        DECLARE @xmlData XML = 
-        '<Datos>
-            <!--
-            -->
-            <Puestos>
-            <Puesto Nombre="Electricista" SalarioXHora="1200.00"/>
-            <Puesto Nombre="Auxiliar de Laboratorio" SalarioXHora="1250.00"/>
-            <Puesto Nombre="Operador de Maquina" SalarioXHora="1025.00"/>
-            <Puesto Nombre="Cajero" SalarioXHora="1100.00"/>
-            <Puesto Nombre="Camarero" SalarioXHora="1000.00"/>
-            <Puesto Nombre="Conductor" SalarioXHora="1500.00"/>
-            <Puesto Nombre="Asistente" SalarioXHora="1100.00"/>
-            <Puesto Nombre="Recepcionista" SalarioXHora="1200.00"/>
-            <Puesto Nombre="Fontanero" SalarioXHora="1300.00"/>
-            <Puesto Nombre="Albanil" SalarioXHora="1050.00"/>
-            </Puestos>
-            <!--
-            =====================================================
-                    TIPOS DE JORNADA (Id del XML, NO identity)
-                ====================================================== 
-            -->
-            <TiposJornada>
-            <TipoJornada Id="1" Nombre="Diurno" HoraInicio="06:00:00" HoraFin="14:00:00"/>
-            <TipoJornada Id="2" Nombre="Vespertino" HoraInicio="14:00:00" HoraFin="22:00:00"/>
-            <TipoJornada Id="3" Nombre="Nocturno" HoraInicio="22:00:00" HoraFin="06:00:00"/>
-            </TiposJornada>
-            <!--
-            =====================================================
-                    FERIADOS (Id del XML, NO identity)
-                ====================================================== 
-            -->
-            <Feriados>
-            <Feriado Id="2" Nombre="Jueves Santo" Fecha="2026-04-02"/>
-            <Feriado Id="3" Nombre="Viernes Santo" Fecha="2026-04-03"/>
-            <Feriado Id="1" Nombre="Dia de Juan Santamaria" Fecha="2026-04-11"/>
-            <Feriado Id="4" Nombre="Dia del trabajo" Fecha="2026-05-01"/>
-            <Feriado Id="5" Nombre="Anexion del Nicoya" Fecha="2026-07-25"/>
-            <Feriado Id="6" Nombre="Dia de la Virgen de los Angeles" Fecha="2026-08-02"/>
-            <Feriado Id="7" Nombre="Dia de la Independencia" Fecha="2026-09-15"/>
-            <Feriado Id="8" Nombre="Dia de las Culturas" Fecha="2026-10-12"/>
-            <Feriado Id="9" Nombre="Navidad" Fecha="2026-12-25"/>
-            </Feriados>
-            <!--
-            =====================================================
-                    TIPOS DE EVENTO (Id del XML, NO identity)
-                ====================================================== 
-            -->
-            <TiposEvento>
-            <TipoEvento Id="1" Nombre="Login Exitoso"/>
-            <TipoEvento Id="2" Nombre="Login No Exitoso"/>
-            <TipoEvento Id="3" Nombre="Login deshabilitado"/>
-            <TipoEvento Id="4" Nombre="Logout"/>
-            <TipoEvento Id="5" Nombre="Insercion no exitosa"/>
-            <TipoEvento Id="6" Nombre="Insercion exitosa"/>
-            <TipoEvento Id="7" Nombre="Update no exitoso"/>
-            <TipoEvento Id="8" Nombre="Update exitoso"/>
-            <TipoEvento Id="9" Nombre="Intento de borrado"/>
-            <TipoEvento Id="10" Nombre="Borrado exitoso"/>
-            <TipoEvento Id="11" Nombre="Consulta con filtro de nombre"/>
-            <TipoEvento Id="12" Nombre="Consulta con filtro de cedula"/>
-            <TipoEvento Id="13" Nombre="Intento de insertar movimiento"/>
-            <TipoEvento Id="14" Nombre="Insertar movimiento exitoso"/>
-            <TipoEvento Id="15" Nombre="Impersonar empleado"/>
-            <TipoEvento Id="16" Nombre="Regresar a interfaz de administrador"/>
-            <TipoEvento Id="17" Nombre="Listar empleados"/>
-            <TipoEvento Id="18" Nombre="Asociar deduccion"/>
-            <TipoEvento Id="19" Nombre="Desasociar deduccion"/>
-            <TipoEvento Id="20" Nombre="Consultar planilla semanal"/>
-            <TipoEvento Id="21" Nombre="Consultar planilla mensual"/>
-            <TipoEvento Id="22" Nombre="Ingreso de marcas de asistencia"/>
-            <TipoEvento Id="23" Nombre="Ingreso nuevas jornadas"/>
-            </TiposEvento>
-            <!--
-            =====================================================
-                    TIPOS DE MOVIMIENTO (Id del XML, NO identity)
-                    Accion: C=Credito, D=Debito
-                ====================================================== 
-            -->
-            <TiposMovimiento>
-            <TipoMovimiento Id="1" Nombre="Credito Horas Ordinarias" Accion="C"/>
-            <TipoMovimiento Id="2" Nombre="Credito Horas Extra Normales" Accion="C"/>
-            <TipoMovimiento Id="3" Nombre="Credito Horas Extra Dobles" Accion="C"/>
-            <TipoMovimiento Id="4" Nombre="Caja" Accion="C"/>
-            <TipoMovimiento Id="5" Nombre="Debito CCSS" Accion="D"/>
-            <TipoMovimiento Id="6" Nombre="Debito Asociacion Solidarista" Accion="D"/>
-            <TipoMovimiento Id="7" Nombre="Debito Ahorro Obligatorio" Accion="D"/>
-            <TipoMovimiento Id="8" Nombre="Debito Pension Alimenticia" Accion="D"/>
-            </TiposMovimiento>
-            <!--
-            =====================================================
-                    TIPOS DE DEDUCCION (Id del XML, NO identity)
-                    EsObligatoria/EsPorcentual: 0=No, 1=Si
-                    TipoMovimiento: Nombre del TipoMovimiento asociado (FK lookup)
-                ====================================================== 
-            -->
-            <TiposDeduccion>
-            <TipoDeduccion Id="1" Nombre="Obligatorio de Ley" EsObligatoria="1" EsPorcentual="1" Valor="0.0950" TipoMovimiento="Debito CCSS"/>
-            <TipoDeduccion Id="2" Nombre="Ahorro Asociacion Solidarista" EsObligatoria="0" EsPorcentual="1" Valor="0.0500" TipoMovimiento="Debito Asociacion Solidarista"/>
-            <TipoDeduccion Id="3" Nombre="Ahorro Vacacional" EsObligatoria="0" EsPorcentual="0" Valor="0.0000" TipoMovimiento="Debito Ahorro Obligatorio"/>
-            <TipoDeduccion Id="4" Nombre="Pension Alimenticia" EsObligatoria="0" EsPorcentual="0" Valor="0.0000" TipoMovimiento="Debito Pension Alimenticia"/>
-            </TiposDeduccion>
-            <!--
-            =====================================================
-                    USUARIOS (Id del XML, NO identity)
-                    Tipo: 1=Administrador, 2=Empleado
-                ====================================================== 
-            -->
-            <Usuarios>
-            <Usuario Id="1" Username="admin" PasswordHash="admin123" Tipo="1"/>
-            <Usuario Id="2" Username="Goku" PasswordHash="1234" Tipo="1"/>
-            <Usuario Id="3" Username="Willy" PasswordHash="1234" Tipo="1"/>
-            </Usuarios>
-            <!--
-            =====================================================
-                    CODIGOS DE ERROR (Codigo del XML, PK directa)
-                ====================================================== 
-            -->
-            <Error>
-            <error Codigo="50001" Descripcion="Username no existe"/>
-            <error Codigo="50002" Descripcion="Password no existe"/>
-            <error Codigo="50003" Descripcion="Login deshabilitado"/>
-            <error Codigo="50004" Descripcion="Empleado con ValorDocumentoIdentidad ya existe en insercion"/>
-            <error Codigo="50005" Descripcion="Empleado con mismo nombre ya existe en insercion"/>
-            <error Codigo="50006" Descripcion="Empleado con ValorDocumentoIdentidad ya existe en actualizacion"/>
-            <error Codigo="50007" Descripcion="Empleado con mismo nombre ya existe en actualizacion"/>
-            <error Codigo="50008" Descripcion="Error de base de datos"/>
-            <error Codigo="50009" Descripcion="Nombre de empleado no alfabetico"/>
-            <error Codigo="50010" Descripcion="Valor de documento de identidad no alfabetico"/>
-            <error Codigo="50011" Descripcion="Monto del movimiento rechazado pues si se aplicar el saldo seria negativo."/>
-            <error Codigo="50012" Descripcion="Empleado no existe o esta inactivo"/>
-            <error Codigo="50013" Descripcion="Usuario no es administrador"/>
-            </Error>   
-            <Departamentos>
-                <Departamento Id="1" Nombre="Operaciones"/>
-                <Departamento Id="2" Nombre="Administración"/>
-                <Departamento Id="3" Nombre="Recursos Humanos"/>
-            </Departamentos>
-            <TiposDeDocumento>
-                <TipoDeDocumento Id="1" Nombre="Cédula de Identidad"/>
-                <TipoDeDocumento Id="2" Nombre="Pasaporte"/>
-                <TipoDeDocumento Id="3" Nombre="DIMEX / Cédula de Residencia"/>
-            </TiposDeDocumento>
-        </Datos>
-        ';
-        
+        DECLARE @xmlData XML;
+        SELECT @xmlData = CAST(BulkColumn AS XML)
+        FROM OPENROWSET(BULK '/scripts/Data/Catalogos.xml', SINGLE_BLOB) AS x;
+
         BEGIN TRANSACTION;
 
             -- 1. Cargar tipos de Jornada
-            INSERT dbo.TipoJornada 
+            INSERT dbo.TipoJornada
             (
                 id
                 ,Nombre
@@ -162,15 +21,15 @@ BEGIN
                 ,HoraFin
             )
             SELECT
-                T.Item.value('@Id', 'INT') -- Cambio a '@Id' con mayúscula
+                T.Item.value('@Id', 'INT')
                 , T.Item.value('@Nombre', 'VARCHAR(256)')
                 , T.Item.value('@HoraInicio', 'TIME(0)')
                 , T.Item.value('@HoraFin', 'TIME(0)')
-            FROM @xmlData.nodes('/Datos/TiposJornada/TipoJornada') 
+            FROM @xmlData.nodes('/Datos/TiposJornada/TipoJornada')
                 AS T(Item);
 
             -- 2. Cargar Puestos
-            INSERT dbo.Puesto 
+            INSERT dbo.Puesto
             (
                 Nombre
                 , SalarioXHora
@@ -178,21 +37,21 @@ BEGIN
             SELECT
                 T.Item.value('@Nombre', 'VARCHAR(256)')
                 , T.Item.value('@SalarioXHora', 'MONEY')
-            FROM @xmlData.nodes('/Datos/Puestos/Puesto') 
+            FROM @xmlData.nodes('/Datos/Puestos/Puesto')
                 AS T(Item);
-        
+
             -- 3. Insertar Feriados
-            INSERT dbo.Feriado 
+            INSERT dbo.Feriado
             (
                 id
                 ,Nombre
                 ,Fecha
-            )           
+            )
             SELECT
                 T.Item.value('@Id', 'INT')
                 , T.Item.value('@Nombre', 'VARCHAR(256)')
                 , T.Item.value('@Fecha', 'DATE')
-            FROM @xmlData.nodes('/Datos/Feriados/Feriado') 
+            FROM @xmlData.nodes('/Datos/Feriados/Feriado')
                 AS T(Item);
 
             -- 4. Insertar tipos de movimiento
@@ -205,12 +64,12 @@ BEGIN
             SELECT
                 T.Item.value('@Id', 'INT')
                 , T.Item.value('@Nombre', 'VARCHAR(256)')
-                , T.Item.value('@Accion', 'VARCHAR(8)') 
-            FROM @xmlData.nodes('/Datos/TiposMovimiento/TipoMovimiento') 
+                , T.Item.value('@Accion', 'VARCHAR(8)')
+            FROM @xmlData.nodes('/Datos/TiposMovimiento/TipoMovimiento')
                 AS T(Item);
-        
-            -- 5. Insertar tipos de deduccion 
-            INSERT dbo.TipoDeduccion 
+
+            -- 5. Insertar tipos de deduccion
+            INSERT dbo.TipoDeduccion
             (
                 id
                 ,Nombre
@@ -221,18 +80,18 @@ BEGIN
             )
             SELECT
                 T.Item.value('@Id', 'INT')
-                , T.Item.value('@Nombre', 'VARCHAR(256)') 
-                , T.Item.value('@EsObligatoria', 'BIT')   
-                , T.Item.value('@EsPorcentual', 'BIT')    
+                , T.Item.value('@Nombre', 'VARCHAR(256)')
+                , T.Item.value('@EsObligatoria', 'BIT')
+                , T.Item.value('@EsPorcentual', 'BIT')
                 , T.Item.value('@Valor', 'REAL')
-                , TM.id                                  
-            FROM @xmlData.nodes('/Datos/TiposDeduccion/TipoDeduccion') 
+                , TM.id
+            FROM @xmlData.nodes('/Datos/TiposDeduccion/TipoDeduccion')
                 AS T(Item)
-            INNER JOIN dbo.TipoMovimiento AS TM 
+            INNER JOIN dbo.TipoMovimiento AS TM
                 ON TM.Nombre = T.Item.value('@TipoMovimiento', 'VARCHAR(256)');
-                
+
             -- 6. Insertar Usuarios
-            INSERT dbo.Usuario 
+            INSERT dbo.Usuario
             (
                 id
                 , Username
@@ -241,14 +100,14 @@ BEGIN
             )
             SELECT
                 T.Item.value('@Id', 'INT')
-                , T.Item.value('@Username', 'VARCHAR(256)')    
-                , T.Item.value('@PasswordHash', 'VARCHAR(256)') 
-                , T.Item.value('@Tipo', 'VARCHAR(256)')       
-            FROM @xmlData.nodes('/Datos/Usuarios/Usuario') 
+                , T.Item.value('@Username', 'VARCHAR(256)')
+                , T.Item.value('@PasswordHash', 'VARCHAR(256)')
+                , T.Item.value('@Tipo', 'VARCHAR(256)')
+            FROM @xmlData.nodes('/Datos/Usuarios/Usuario')
                 AS T(Item);
 
             -- 7. Insertar Tipo de Evento
-            INSERT dbo.TipoEvento 
+            INSERT dbo.TipoEvento
             (
                 id
                 ,Nombre
@@ -256,43 +115,19 @@ BEGIN
             SELECT
                 T.Item.value('@Id', 'INT')
                 , T.Item.value('@Nombre', 'VARCHAR(256)')
-            FROM @xmlData.nodes('/Datos/TiposEvento/TipoEvento') 
+            FROM @xmlData.nodes('/Datos/TiposEvento/TipoEvento')
                 AS T(Item);
 
-            -- 8. Insertar Departamentos 
-            INSERT dbo.Departamento 
-            (
-                id
-                ,Nombre
-            )
-            SELECT
-                T.Item.value('@Id', 'INT')
-                , T.Item.value('@Nombre', 'VARCHAR(256)')
-            FROM @xmlData.nodes('/Datos/Departamentos/Departamento') 
-                AS T(Item);
-
-            -- 9. Insertar Tipos de Documento de Identidad
-            INSERT dbo.TipoDocIdentidad 
-            (
-                id
-                ,Nombre
-            )
-            SELECT
-                T.Item.value('@Id', 'INT')
-                , T.Item.value('@Nombre', 'VARCHAR(256)')
-            FROM @xmlData.nodes('/Datos/TiposDeDocumento/TipoDeDocumento') 
-                AS T(Item);
-
-            -- 10. Insertar códigos de error
-            INSERT INTO dbo.Error 
+            -- 8. Insertar codigos de error
+            INSERT INTO dbo.Error
             (
                 Codigo
                 ,Descripcion
-            ) 
+            )
             SELECT
                 T.item.value('@Codigo', 'VARCHAR(100)')
                 , T.item.value('@Descripcion', 'VARCHAR(1024)')
-            FROM @xmlData.nodes('/Datos/Error/error') 
+            FROM @xmlData.nodes('/Datos/Error/error')
                 AS T(item);
 
         COMMIT TRANSACTION;
@@ -322,4 +157,3 @@ BEGIN
     END CATCH
 END;
 GO
-

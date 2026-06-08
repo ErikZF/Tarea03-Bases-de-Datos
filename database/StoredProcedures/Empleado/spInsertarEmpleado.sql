@@ -1,8 +1,6 @@
 CREATE PROCEDURE dbo.spInsertarEmpleado
      @inValorDocIdentidad   VARCHAR(64)
     , @inNombre             VARCHAR(256)
-    , @inIdDepartamento     INT
-    , @inIdTipoDocumento    INT
     , @inIdPuesto           INT
     , @inIdUsuario          INT
     , @inCuentaBancaria     VARCHAR(30)
@@ -56,10 +54,9 @@ BEGIN TRY
 
     -- Llenar la descripcion del evento con los datos del empleado
     SET @ParametrosJSON = CONCAT(
-                '{"ValorDocumento":"', @inValorDocIdentidad, 
-                '","Nombre":"', @inNombre, 
-                '","IdPuesto":', @inIdPuesto, 
-                ',"IdDepartamento":', @inIdDepartamento, 
+                '{"ValorDocumento":"', @inValorDocIdentidad,
+                '","Nombre":"', @inNombre,
+                '","IdPuesto":', @inIdPuesto,
                 ',"CuentaBancaria":"', @inCuentaBancaria, '"}'
             );
 
@@ -100,25 +97,21 @@ BEGIN TRY
     -- Insercion exitosa
     INSERT INTO dbo.Empleado (
         idPuesto
-        ,idDepartamento
-        ,idTipoDocumento
         ,idUsuario
         ,ValorDocumento
         ,Nombre
         ,CuentaBancaria
         ,FechaContratacion
-        ,Activo 
+        ,Activo
     )
     VALUES (
         @inIdPuesto
-        , @inIdDepartamento
-        , @inIdTipoDocumento
         , @inIdUsuario
         , @inValorDocIdentidad
         , @inNombre
         , @inCuentaBancaria
-        , GETUTCDATE() 
-        , 1 -- Activo por defecto
+        , GETUTCDATE()
+        , 1
     )
 
     INSERT INTO dbo.BitacoraEvento (

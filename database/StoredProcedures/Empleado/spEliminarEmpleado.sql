@@ -40,10 +40,9 @@ SET NOCOUNT ON
     -- obtener datos del empleado para la bitacora 
     SELECT 
         @ParametrosJSON = CONCAT(
-                '{"ValorDocumento":"', E.ValorDocumento, 
-                '","Nombre":"', E.Nombre, 
-                '","IdPuesto":', E.idPuesto, 
-                ',"IdDepartamento":', E.IdDepartamento, 
+                '{"ValorDocumento":"', E.ValorDocumento,
+                '","Nombre":"', E.Nombre,
+                '","IdPuesto":', E.idPuesto,
                 ',"CuentaBancaria":"', E.CuentaBancaria, '"}'
             )
     FROM 

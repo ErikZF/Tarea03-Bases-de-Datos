@@ -13,16 +13,13 @@ BEGIN TRY
         E.id AS Id
         , E.Nombre
         , E.ValorDocumento AS ValorDocumentoIdentidad
-        , E.idTipoDocumento AS idTipoDocumento
         , E.CuentaBancaria
         , E.FechaContratacion
         , E.Activo
         , P.Nombre AS NombrePuesto
         , P.id AS IdPuesto
-        , D.Nombre AS NombreDepartamento
     FROM dbo.Empleado AS E
     INNER JOIN dbo.Puesto AS P ON (P.id = E.idPuesto)
-    INNER JOIN dbo.Departamento AS D ON (D.id = E.idDepartamento)
     INNER JOIN dbo.Usuario AS U ON (U.id = E.idUsuario)
     WHERE (E.Activo = 1)
         AND (
