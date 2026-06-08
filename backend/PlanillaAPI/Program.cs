@@ -1,34 +1,34 @@
+using System.Data;
+using Microsoft.Data.SqlClient;
+using PlanillaAPI;
+using Scalar.AspNetCore;
+using VacacionesAPI.Interfaces;
+using VacacionesAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+string connectionString = builder.Configuration.GetConnectionString("DockerConnection")
+    ?? throw new InvalidOperationException("Connection string not found.");
+
+
+builder.Services.AddTransient<IDbConnection>(_ => new SqlConnection(connectionString));
+builder.Services.AddScoped<IEmpleadoService, EmpleadoService>();
+builder.Services.AddOpenApi();
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
+
+
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-});
+EmpleadoEndpoint.MapearEmpleadoEndpoints(app);
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

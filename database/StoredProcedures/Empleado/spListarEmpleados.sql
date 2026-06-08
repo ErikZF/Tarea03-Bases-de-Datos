@@ -10,16 +10,16 @@ BEGIN TRY
     SET @outResultCode =0;
 
     SELECT
-        E.id
+        E.id AS Id
         , E.Nombre
-        , E.ValorDocumento
+        , E.ValorDocumento AS ValorDocumentoIdentidad
+        , E.idTipoDocumento AS idTipoDocumento
         , E.CuentaBancaria
         , E.FechaContratacion
         , E.Activo
         , P.Nombre AS NombrePuesto
+        , P.id AS IdPuesto
         , D.Nombre AS NombreDepartamento
-        , U.username
-        , U.Tipo
     FROM dbo.Empleado AS E
     INNER JOIN dbo.Puesto AS P ON (P.id = E.idPuesto)
     INNER JOIN dbo.Departamento AS D ON (D.id = E.idDepartamento)

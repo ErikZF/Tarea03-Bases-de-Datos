@@ -17,6 +17,17 @@ BEGIN
     );
 END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Error' AND schema_id = SCHEMA_ID('dbo'))
+BEGIN
+    CREATE TABLE dbo.Error (
+        id  INT  IDENTITY(1,1) NOT NULL
+        , Codigo  VARCHAR(100)  NOT NULL
+        , Descripcion VARCHAR(1024)  NOT NULL
+    );
+END
+GO
+
+
 
 IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'TipoDocIdentidad' AND schema_id = SCHEMA_ID('dbo'))
 BEGIN
@@ -68,7 +79,7 @@ BEGIN
         , Nombre VARCHAR(100) NOT NULL
         , Accion CHAR(1)      NOT NULL  -- +=credito, -=debito
         , CONSTRAINT PK_TipoMovimiento PRIMARY KEY (id)
-        , CONSTRAINT CHK_TipoMovimiento_Accion CHECK (Accion IN ('+', '-'))
+        , CONSTRAINT CHK_TipoMovimiento_Accion CHECK (Accion IN ('D', 'C'))
     );
 END
 GO
@@ -104,13 +115,13 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Usuario' AND schema_id = SCHEMA_ID('dbo'))
 BEGIN
     CREATE TABLE dbo.Usuario (
-        id             INT           IDENTITY(1,1) NOT NULL
+        id            INT NOT NULL
         , Username     VARCHAR(60)   NOT NULL
         , PasswordHash VARCHAR(256)  NOT NULL
         , Tipo         VARCHAR(20)   NOT NULL  -- 'administrador' o 'empleado'
         , CONSTRAINT PK_Usuario PRIMARY KEY (id)
         , CONSTRAINT UQ_Usuario_Username UNIQUE (Username)
-        , CONSTRAINT CHK_Usuario_Tipo CHECK (Tipo IN ('administrador', 'empleado'))
+        , CONSTRAINT CHK_Usuario_Tipo CHECK (Tipo IN ('1', '2'))
     );
 END
 GO

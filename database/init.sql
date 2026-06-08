@@ -25,6 +25,8 @@ GO
 :r /scripts/StoredProcedures/Error/spInsertarError.sql
 GO
 
+:r /scripts/StoredProcedures/Error/spConsultarError.sql
+GO
 
 
 
@@ -90,8 +92,9 @@ GO
 
 :r /scripts/ETL/spETLCargaOperacionEmpleado.sql
 GO
+DECLARE @outResultCodeCatalogos INT = 0
 
-
+EXEC dbo.spCargarCatalogosXML @outResultCode = @outResultCodeCatalogos OUTPUT
 
 DECLARE @MiXML XML;
 DECLARE @ResultadoCodigo INT;
