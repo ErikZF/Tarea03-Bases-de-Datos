@@ -25,6 +25,7 @@ BEGIN TRY
         AND (
             (@inFiltro = '')
             OR (E.Nombre LIKE '%' + @inFiltro + '%')
+            OR (E.ValorDocumento LIKE '%' + @inFiltro + '%')
         )
     ORDER BY E.Nombre;
 
