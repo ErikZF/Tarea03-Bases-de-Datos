@@ -43,7 +43,7 @@ BEGIN TRY
                 WHEN TD.EsPorcentual = 1 THEN 
                     ((PS.HorasOrdinarias * P.SalarioXHora) + 
                      (PS.HorasExtraNormal * P.SalarioXHora * 1.5) + 
-                     (PS.HorasExtraDoble * P.SalarioXHora * 2.0)) * (TD.Valor / 100.0)
+                     (PS.HorasExtraDoble * P.SalarioXHora * 2.0)) * (TD.Valor)
                 
                 -- tipo deduccion fija
                 ELSE 

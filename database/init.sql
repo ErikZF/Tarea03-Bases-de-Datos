@@ -57,6 +57,12 @@ GO
 :r /scripts/StoredProcedures/Empleado/spListarEmpleados.sql
 GO
 
+:r /scripts/StoredProcedures/Empleado/spConsultarEmpleado.sql
+GO
+
+:r /scripts/StoredProcedures/Empleado/spObtenerPuestos.sql
+GO
+
 :r /scripts/StoredProcedures/Empleado/spInsertarEmpleado.sql
 GO
 

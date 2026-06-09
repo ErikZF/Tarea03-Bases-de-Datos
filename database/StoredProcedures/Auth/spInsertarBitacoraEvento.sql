@@ -1,29 +1,27 @@
 CREATE OR ALTER PROCEDURE dbo.spInsertarBitacoraEvento
     @inIdTipoEvento INT
-    , @inIdUsuario INT
-    , @inIP VARCHAR(45)
-    , @inDescripcion NVARCHAR(2000)
+    , @inIdUsuario  INT
+    , @inIP         VARCHAR(50)
+    , @inDescripcion VARCHAR(500)
     , @outResultCode INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
 
 BEGIN TRY
-    
+
     SET @outResultCode = 0;
 
-    INSERT INTO dbo.BitacoraEvento(
-        idTipoEvento
-        , idUsuario
-        , IP
-        , FechaHora
+    INSERT INTO dbo.BitacoraEvento (
+        IdTipoEvento
+        , IdPostByUser
+        , PostInIP
         , Descripcion
     )
     VALUES (
         @inIdTipoEvento
         , @inIdUsuario
         , @inIP
-        , GETUTCDATE()
         , ISNULL(@inDescripcion, '')
     );
 
@@ -34,25 +32,25 @@ BEGIN CATCH
         ROLLBACK TRANSACTION;
 
     DECLARE
-        @ErrMsg NVARCHAR(4000) = ERROR_MESSAGE()
-        , @ErrNum INT = ERROR_NUMBER()
-        , @ErrSev INT = ERROR_SEVERITY()
-        , @ErrStat INT = ERROR_STATE()
-        , @ErrLine INT = ERROR_LINE()
+        @ErrMsg  NVARCHAR(4000)  = ERROR_MESSAGE()
+        , @ErrNum  INT           = ERROR_NUMBER()
+        , @ErrSev  INT           = ERROR_SEVERITY()
+        , @ErrStat INT           = ERROR_STATE()
+        , @ErrLine INT           = ERROR_LINE()
         , @ErrProc NVARCHAR(128) = ISNULL(ERROR_PROCEDURE(), '')
-        , @outCode INT  = 0
+        , @outCode INT           = 0
         ;
 
-    SET @outResultCode = 50001;
+    SET @outResultCode = 50008;
 
     EXEC dbo.spInsertarError
-        @InErrorNumber = @ErrNum
-        , @InErrorMessage = @ErrMsg
-        , @InErrorSeverity = @ErrSev
-        , @InErrorState  = @ErrStat
-        , @InErrorLine = @ErrLine
+        @InErrorNumber    = @ErrNum
+        , @InErrorMessage   = @ErrMsg
+        , @InErrorSeverity  = @ErrSev
+        , @InErrorState     = @ErrStat
+        , @InErrorLine      = @ErrLine
         , @InErrorProcedure = @ErrProc
-        , @outResultCode = @outCode OUTPUT
+        , @outResultCode    = @outCode OUTPUT
         ;
 
 END CATCH;

@@ -7,9 +7,9 @@ BEGIN
 BEGIN TRY
     SET NOCOUNT ON;
 
-    SET @outResultCode = 0
-   
-    SELECT 
+    SET @outResultCode = 0;
+
+    SELECT
         TD.Nombre       -- el nombre de lo que se le rebajo
         , MP.Monto      -- cuanto se le rebajo
         , TD.EsPorcentual -- Lo que se rebajo fue un porcentaje?

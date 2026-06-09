@@ -4,8 +4,8 @@ export interface Empleado {
   nombre: string;
   idPuesto: number;
   nombrePuesto: string;
-  fechaContratacion: string;
-  saldoVacaciones: number;
+  fechaContratacion: Date;
+  cuentaBancaria: string;
   Activo: boolean;
 }
 

@@ -1,11 +1,11 @@
-CREATE PROCEDURE spDetallePlanillaMensual
-    @inIdEmpleado      INT
-    ,@inIdPlanillaMensual       INT 
-    ,@outResultCode     INT OUTPUT
+CREATE OR ALTER PROCEDURE dbo.spDetallePlanillaMensual
+    @inIdEmpleado         INT
+    ,@inIdPlanillaMensual INT
+    ,@outResultCode       INT OUTPUT
 AS
 BEGIN
+SET NOCOUNT ON;
 BEGIN TRY
-
 
     SET @outResultCode = 0
     

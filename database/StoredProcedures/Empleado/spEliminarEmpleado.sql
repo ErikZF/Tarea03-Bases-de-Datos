@@ -1,129 +1,85 @@
 CREATE PROCEDURE dbo.spEliminarEmpleado
     @inIdEmpleado           INT
     , @inIdUsuario          INT
-    , @inIP                 VARCHAR (50)
+    , @inIP                 VARCHAR(50)
     , @outResultCode        INT OUTPUT
 AS
 BEGIN
 BEGIN TRY
 SET NOCOUNT ON
-    
+
     SET @outResultCode = 0
 
-    DECLARE @ParametrosJSON VARCHAR(1000) = NULL
+    DECLARE @ParametrosJSON VARCHAR(500) = NULL
+    DECLARE @_bitacoraRC    INT          = 0
+    DECLARE @_desc          VARCHAR(500) = NULL
 
-     -- Validar que de hecho exista un empleado con ese id
     IF NOT EXISTS (
-        SELECT
-            1
-        FROM
-            dbo.Empleado AS E
-        WHERE 
-            E.id = @inIdEmpleado
+        SELECT 1 FROM dbo.Empleado AS E WHERE E.id = @inIdEmpleado
     )
-        SET @outResultCode = 50012 -- No existe un empleado con ese id
+        SET @outResultCode = 50012
 
-
-     -- Validar que ese empleado no se haya eliminado ya
     ELSE IF EXISTS (
-        SELECT
-            1
-        FROM
-            dbo.Empleado AS E
-        WHERE 
-            E.id = @inIdEmpleado
-            AND E.Activo = 0
+        SELECT 1 FROM dbo.Empleado AS E
+        WHERE E.id = @inIdEmpleado AND E.Activo = 0
     )
-        SET @outResultCode = 50013 -- Empleado ya fue eliminado
+        SET @outResultCode = 50012
 
-
-    -- obtener datos del empleado para la bitacora 
-    SELECT 
+    SELECT
         @ParametrosJSON = CONCAT(
-                '{"ValorDocumento":"', E.ValorDocumento,
-                '","Nombre":"', E.Nombre,
-                '","IdPuesto":', E.idPuesto,
-                ',"CuentaBancaria":"', E.CuentaBancaria, '"}'
-            )
-    FROM 
-        dbo.Empleado AS E
-    WHERE
-        E.id = @inIdEmpleado
+            '{"ValorDocumento":"', E.ValorDocumento,
+            '","Nombre":"', E.Nombre,
+            '","IdPuesto":', E.idPuesto,
+            ',"CuentaBancaria":"', E.CuentaBancaria, '"}'
+        )
+    FROM dbo.Empleado AS E
+    WHERE E.id = @inIdEmpleado
 
-
-    -- en caso de que haya fallado el SP en alguna validacion
     IF (@outResultCode <> 0)
     BEGIN
-
-        INSERT INTO dbo.BitacoraEvento 
-        (
-            IdTipoEvento
-            ,idUsuario
-            ,FechaHora
-            ,Descripcion
-            ,IP
-        )
-        VALUES 
-        (
-            7   -- TipoEvento: update no exitoso
-            ,@inIdUsuario
-            ,GETUTCDATE()
-            ,CONCAT(
-                'Fallo al eliminar empleado, Codigo de Error:'
-                ,@outResultCode
-                ,' Datos: '
-                ,@ParametrosJSON)
-            ,@inIP
-        )
-
+        SET @_desc = CONCAT('Fallo al eliminar empleado. Cod:', @outResultCode, ' ', @ParametrosJSON);
+        EXEC dbo.spInsertarBitacoraEvento
+            @inIdTipoEvento  = 9
+            , @inIdUsuario   = @inIdUsuario
+            , @inIP          = @inIP
+            , @inDescripcion = @_desc
+            , @outResultCode = @_bitacoraRC OUTPUT;
         RETURN
     END
 
-
     BEGIN TRANSACTION
     UPDATE E WITH(ROWLOCK)
-    SET 
-        E.Activo = 0
-    FROM
-        dbo.Empleado AS E
-    WHERE 
-        E.id = @inIdEmpleado
-    
+    SET E.Activo = 0
+    FROM dbo.Empleado AS E
+    WHERE E.id = @inIdEmpleado
 
-    INSERT INTO dbo.BitacoraEvento (
-        idTipoEvento
-        ,idUsuario
-        ,Descripcion
-        ,FechaHora
-        ,IP
-    )
-    VALUES(
-        10 -- TipoEvento: Borrado Exitoso
-        ,@inIdUsuario
-        ,@ParametrosJSON
-        ,GETUTCDATE()
-        ,@inIP
-    )
+    SET @_desc = CONCAT('Empleado eliminado: ', @ParametrosJSON);
+    EXEC dbo.spInsertarBitacoraEvento
+        @inIdTipoEvento  = 10
+        , @inIdUsuario   = @inIdUsuario
+        , @inIP          = @inIP
+        , @inDescripcion = @_desc
+        , @outResultCode = @_bitacoraRC OUTPUT;
 
     COMMIT TRANSACTION
-    
+
 END TRY
 BEGIN CATCH
-        
+
     IF @@TRANCOUNT > 0
         ROLLBACK TRANSACTION;
 
     SET @outResultCode = 50008;
 
-    DECLARE @ErrorNum INT = ERROR_NUMBER();
-    DECLARE @ErrorMsg NVARCHAR(4000) = ERROR_MESSAGE();
-    DECLARE @ErrorSev INT = ERROR_SEVERITY();
-    DECLARE @ErrorStat INT = ERROR_STATE();
-    DECLARE @ErrorLine INT = ERROR_LINE();
-    DECLARE @ErrorProc NVARCHAR(128) = ERROR_PROCEDURE();
+    DECLARE @ErrorNum  INT            = ERROR_NUMBER();
+    DECLARE @ErrorMsg  NVARCHAR(4000) = ERROR_MESSAGE();
+    DECLARE @ErrorSev  INT            = ERROR_SEVERITY();
+    DECLARE @ErrorStat INT            = ERROR_STATE();
+    DECLARE @ErrorLine INT            = ERROR_LINE();
+    DECLARE @ErrorProc NVARCHAR(128)  = ERROR_PROCEDURE();
 
     EXEC dbo.spInsertarError
-            @InErrorNumber    = @ErrorNum
+         @InErrorNumber    = @ErrorNum
         ,@InErrorMessage   = @ErrorMsg
         ,@InErrorSeverity  = @ErrorSev
         ,@InErrorState     = @ErrorStat
@@ -133,4 +89,3 @@ BEGIN CATCH
 
 END CATCH
 END
-
