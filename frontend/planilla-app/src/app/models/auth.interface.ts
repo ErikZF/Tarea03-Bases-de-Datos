@@ -7,4 +7,6 @@ export interface LoginRequest {
 export interface LoginResponse {
   userId: number;
   username: string;
+  tipo: number;
+  idEmpleado: number;
 }

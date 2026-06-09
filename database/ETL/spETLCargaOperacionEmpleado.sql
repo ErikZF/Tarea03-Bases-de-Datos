@@ -59,9 +59,6 @@ BEGIN TRY
         INSERT dbo.Empleado 
         (
             idPuesto
-
-            ,idDepartamento
-            ,idTipoDocumento
             ,idUsuario
 
             ,ValorDocumento
@@ -73,9 +70,6 @@ BEGIN TRY
         )
         SELECT 
             T.Item.value('@IdPuesto', 'INT')
-
-            ,T.Item.value('@IdDepartamento', 'INT')
-            ,T.Item.value('@IdTipoDocumento', 'INT')
             ,U.id
 
             ,T.Item.value('@ValorTipoDocumento', 'VARCHAR(64)')
