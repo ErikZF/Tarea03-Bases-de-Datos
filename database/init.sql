@@ -22,13 +22,16 @@ GO
 -- STORED PROCEDURES
 --#####################################################################
 
+
+
 :r /scripts/StoredProcedures/Error/spInsertarError.sql
 GO
 
 :r /scripts/StoredProcedures/Error/spConsultarError.sql
 GO
 
-
+:r /scripts/StoredProcedures/Auth/spInsertarBitacoraEvento.sql
+GO
 
 :r /scripts/StoredProcedures/Planilla/spAperturaSemana.sql
 GO
@@ -37,6 +40,9 @@ GO
 GO
 
 :r /scripts/StoredProcedures/Planilla/spConsultarPlanillaSemanal.sql
+GO
+
+:r /scripts/StoredProcedures/Planilla/spConsultarPlanillaMensual.sql
 GO
 
 :r /scripts/StoredProcedures/Planilla/spConsultarDeduccionesSemanal.sql
@@ -73,12 +79,10 @@ GO
 GO
 
 
-
-
-:r /scripts/StoredProcedures/Auth/spInsertarBitacoraEvento.sql
+:r /scripts/StoredProcedures/Auth/spLogin.sql
 GO
 
-:r /scripts/StoredProcedures/Auth/spLogin.sql
+:r /scripts/StoredProcedures/Auth/spLogout.sql
 GO
 
 --#####################################################################
@@ -87,7 +91,6 @@ GO
 
 :r /scripts/Trigger/triggerAsociarEmpleadoDeducciones.sql
 GO
-
 
 --#####################################################################
 -- HABILITAR LECTURA DE ARCHIVOS EXTERNOS (OPENROWSET BULK)
@@ -100,6 +103,7 @@ EXEC sp_configure 'Ad Hoc Distributed Queries', 1;
 RECONFIGURE;
 GO
 
+
 --#####################################################################
 -- CARGAR CATALOGOS XML
 --#####################################################################
@@ -108,7 +112,8 @@ GO
 GO
 
 DECLARE @outResultCodeCatalogos INT = 0;
-EXEC dbo.spCargarCatalogosXML @outResultCode = @outResultCodeCatalogos OUTPUT;
+EXEC dbo.spCargarCatalogosXML @outResultCode = 
+@outResultCodeCatalogos OUTPUT;
 SELECT @outResultCodeCatalogos AS [CodigoResultadoCatalogos];
 GO
 
@@ -120,7 +125,10 @@ GO
 GO
 
 DECLARE @outResultCodeETL INT = 0;
+DECLARE @ResultadoCodigo INT = 0
+
 EXEC dbo.spETLCargaOperacionEmpleado
-    @outResultCode = @outResultCodeETL OUTPUT;
-SELECT @outResultCodeETL AS [CodigoResultadoETL];
-GO
+    @outResultCode = @ResultadoCodigo OUTPUT;
+
+
+SELECT @ResultadoCodigo AS [CodigoResultadoETL];

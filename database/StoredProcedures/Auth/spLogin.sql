@@ -14,18 +14,29 @@ BEGIN TRY
         SELECT 1 
         FROM dbo.Usuario AS U
         WHERE (U.Username = @inUsername)
+            
+    )
+    BEGIN
+        SET @outResultCode = 50001;
+        RETURN;
+    END;
+
+    IF NOT EXISTS(
+        SELECT 1 
+        FROM dbo.Usuario AS U
+        WHERE (U.Username = @inUsername)
             AND (U.PasswordHash = @inPassword)
     )
     BEGIN
-        SET @outResultCode = 50010;
+        SET @outResultCode = 50002;
         RETURN;
     END;
 
     SELECT 
-        U.id
-        , U.Username
-        , U.Tipo
-        , E.id AS idEmpleado
+        U.id AS UserId
+        , U.Username AS Username
+        , U.Tipo AS Tipo
+        , E.id AS IdEmpleado
     FROM dbo.Usuario AS U
     LEFT JOIN dbo.Empleado AS E ON (E.idUsuario = U.id)
     WHERE (U.Username = @inUsername)

@@ -11,9 +11,22 @@ services:
       - "1433:1433"
     volumes:
       - mssql_data:/var/opt/mssql
+      - ./data:/scripts/data
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost",
-             "-U", "sa", "-P", "TuPassword123!", "-Q", "SELECT 1", "-C"]
+      test:
+        [
+          "CMD",
+          "/opt/mssql-tools18/bin/sqlcmd",
+          "-S",
+          "localhost",
+          "-U",
+          "sa",
+          "-P",
+          "TuPassword123!",
+          "-Q",
+          "SELECT 1",
+          "-C",
+        ]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -23,7 +36,7 @@ services:
     container_name: mssql_init_script
     depends_on:
       sqlserver:
-        condition: service_healthy 
+        condition: service_healthy
     volumes:
       - ./Migrations:/scripts/Migrations
       - ./StoredProcedures/Error:/scripts/StoredProcedures/Error
@@ -35,7 +48,7 @@ services:
       - ./Trigger:/scripts/Trigger
       - ./ETL:/scripts/ETL
       - ./init.sql:/scripts/init.sql
-      
+
     entrypoint:
       - /bin/bash
       - -c
