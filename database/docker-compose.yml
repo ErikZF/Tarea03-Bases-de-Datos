@@ -47,6 +47,7 @@ services:
       - ./Data:/scripts/Data
       - ./Trigger:/scripts/Trigger
       - ./ETL:/scripts/ETL
+      - ./data:/scripts/data
       - ./init.sql:/scripts/init.sql
 
     entrypoint:
