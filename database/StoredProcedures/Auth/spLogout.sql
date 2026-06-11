@@ -16,9 +16,9 @@ BEGIN
             INSERT INTO dbo.BitacoraEvento (
                 IdTipoEvento
                 ,Descripcion
-                ,idUsuario
-                ,FechaHora
-                ,IP
+                ,IdPostByUser
+                ,PostTime
+                ,PostInIP
             )
             VALUES(
                 4
