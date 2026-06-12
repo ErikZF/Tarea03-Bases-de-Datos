@@ -189,4 +189,9 @@ export class EmpleadosLista implements OnInit {
       },
     });
   }
+
+  impersonar(emp: Empleado): void {
+    this.authService.impersonar(emp.id);
+    this.router.navigate(['menu-empleado', emp.id]);
+  }
 }

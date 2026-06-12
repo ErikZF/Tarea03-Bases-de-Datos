@@ -54,13 +54,13 @@
             <td>{{ emp.cuentaBancaria }}</td>
             <td>
               <button class="btn btn-sm btn-info me-1" (click)="abrirVer(emp)">Ver</button>
-              <button class="btn btn-sm btn-warning me-1" (click)="abrirEditar(emp)">Editar</button>
-              <button class="btn btn-sm btn-danger mr-2" (click)="abrirEliminar(emp)">
+              <!-- <button class="btn btn-sm btn-warning me-1" (click)="abrirEditar(emp)">Editar</button> -->
+              <!-- <button class="btn btn-sm btn-danger mr-2" (click)="abrirEliminar(emp)">
                 Eliminar
-              </button>
-              <!-- <button class="btn btn-sm btn-success" (click)="navegarMovimientos(emp)">
-                Movimientos
               </button> -->
+              <button class="btn btn-sm btn-success" (click)="impersonar(emp)">
+                Impersonar Empleado
+              </button>
             </td>
           </tr>
         }
@@ -86,7 +86,7 @@
             <strong>Fecha contratación:</strong>
             {{ empleadoSeleccionado.fechaContratacion }}
           </p>
-          <p><strong>Cuenta Bancaria:</strong> {{ empleadoSeleccionado.cuentaBancaria }} días</p>
+          <p><strong>Cuenta Bancaria:</strong> {{ empleadoSeleccionado.cuentaBancaria }}</p>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>

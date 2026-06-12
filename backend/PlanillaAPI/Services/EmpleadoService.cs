@@ -60,9 +60,6 @@ public class EmpleadoService : IEmpleadoService
 
         parametros.Add("@inNombre", dto.Nombre);
 
-        parametros.Add("@inIdDepartamento", dto.IdDepartamento);
-        parametros.Add("@inIdTipoDocumento", dto.IdTipoDocumento);
-
         parametros.Add("@inIdPuesto", dto.IdPuesto);
         parametros.Add("@inIdUsuario", userId);
 
