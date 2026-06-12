@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 import { LoginRequest, LoginResponse } from '../models/auth.interface';
 
 const API = 'http://localhost:5223/api/auth';
@@ -21,7 +21,9 @@ export class Auth {
 
   guardarSesion(res: LoginResponse): void {
     sessionStorage.setItem('userId', res.userId.toString());
+    sessionStorage.setItem('userIdActivo', res.userId.toString());
     sessionStorage.setItem('username', res.username);
+    sessionStorage.setItem('esAdmin', res.tipo ? '1' : '0');
   }
 
   cerrarSesion(): void {
@@ -29,6 +31,10 @@ export class Auth {
   }
 
   get userId(): number {
+    return parseInt(sessionStorage.getItem('userIdActivo') ?? '0');
+  }
+
+  get userIdReal(): number {
     return parseInt(sessionStorage.getItem('userId') ?? '0');
   }
 
@@ -38,5 +44,18 @@ export class Auth {
 
   get estaLogueado(): boolean {
     return !!sessionStorage.getItem('userId');
+  }
+
+  get esAdmin(): boolean {
+    return sessionStorage.getItem('esAdmin') === '1';
+  }
+
+  impersonar(empleadoUsuarioId: number): void {
+    sessionStorage.setItem('userIdActivo', empleadoUsuarioId.toString());
+  }
+
+  detenerImpersonacion(): void {
+    const idReal = sessionStorage.getItem('userId') ?? '0';
+    sessionStorage.setItem('userIdActivo', idReal);
   }
 }

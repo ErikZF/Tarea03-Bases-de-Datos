@@ -1,6 +1,7 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
 using PlanillaAPI;
+using PlanillaAPI.Endpoints;
 using Scalar.AspNetCore;
 using VacacionesAPI.Endpoints;
 using VacacionesAPI.Interfaces;
@@ -15,6 +16,7 @@ string connectionString = builder.Configuration.GetConnectionString("DockerConne
 builder.Services.AddTransient<IDbConnection>(_ => new SqlConnection(connectionString));
 builder.Services.AddScoped<IEmpleadoService, EmpleadoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPlanillaService, PlanillaService>();
 builder.Services.AddOpenApi();
 
 
@@ -45,5 +47,6 @@ app.UseHttpsRedirection();
 
 EmpleadoEndpoint.MapearEmpleadoEndpoints(app);
 AuthEndpoints.MapAuthEndpoints(app);
+PlanillaEndpoints.MapearPlanillaEndpoints(app);
 
 app.Run();

@@ -33,7 +33,12 @@ export class Login {
       .subscribe({
         next: (res: any) => {
           this.authService.guardarSesion(res);
-          this.router.navigate(['lista-empleados']);
+
+          if (this.authService.esAdmin) {
+            this.router.navigate(['lista-empleados']);
+          } else {
+            this.router.navigate(['menu-empleado', res.idEmpleado]);
+          }
         },
         error: (err: any) => {
           this.error = err.error?.mensaje ?? 'Error al iniciar sesión';

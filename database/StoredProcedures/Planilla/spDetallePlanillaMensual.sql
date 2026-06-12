@@ -10,11 +10,10 @@ BEGIN TRY
     SET @outResultCode = 0
     
     SELECT
-      TD.Nombre         -- Nombre del tipo de deduccion
-      ,DM.MontoTotal     -- Cuanto se le rebajo en todo el mes de eso
-      ,TD.EsPorcentual   -- Es porcentual o no
-      ,TD.Valor          -- El valor del porcentaje o montofijo
-
+        TD.Nombre                           -- Nombre del tipo de deducción
+        ,SUM(DM.MontoTotal) AS Monto   
+        ,TD.EsPorcentual
+        ,TD.Valor
     FROM
         dbo.PlanillaMensual AS PM
     INNER JOIN dbo.DeduccionXMes AS DM
@@ -24,8 +23,13 @@ BEGIN TRY
     WHERE  
         PM.id = @inIdPlanillaMensual
         AND PM.idEmpleado = @inIdEmpleado
+    GROUP BY 
+        TD.Nombre, 
+        TD.EsPorcentual, 
+        TD.Valor 
 
 
+        
 END TRY
 BEGIN CATCH
 
