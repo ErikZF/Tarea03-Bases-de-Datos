@@ -25,15 +25,17 @@ BEGIN TRY
 
 
     SELECT TOP (@inCantSemanas)
-        E.Nombre 
-        ,S.FechaInicio 
-        ,S.FechaFin
-        ,PS.SalarioBruto
-        ,PS.TotalDeducciones
-        ,PS.SalarioNeto
-        ,PS.HorasOrdinarias
-        ,PS.HorasExtraNormal
-        ,PS.HorasExtraDoble
+        PS.id AS Id
+        , E.Nombre
+        , S.FechaInicio
+        , S.FechaFin
+        , CONCAT(CONVERT(VARCHAR(10), S.FechaInicio, 120), ' — ', CONVERT(VARCHAR(10), S.FechaFin, 120)) AS RangoFechas
+        , PS.SalarioBruto
+        , PS.TotalDeducciones
+        , PS.SalarioNeto
+        , PS.HorasOrdinarias
+        , PS.HorasExtraNormal
+        , PS.HorasExtraDoble
     FROM
         dbo.PlanillaSemanal AS PS
     INNER JOIN dbo.Semana AS S
