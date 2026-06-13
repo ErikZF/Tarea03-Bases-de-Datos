@@ -56,11 +56,29 @@
 
   @if (vistaActiva === 'semanal') {
     <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      <div class="p-5 border-b border-slate-100 bg-slate-50/50">
-        <h2 class="text-base font-bold text-slate-900">Últimas planillas semanales procesadas</h2>
-        <p class="text-xs text-slate-500">
-          Hacé clic en los montos subrayados para auditar el desglose de horas o deducciones.
-        </p>
+      <div class="p-5 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Últimas planillas semanales procesadas</h2>
+          <p class="text-xs text-slate-500">
+            Hacé clic en los montos subrayados para auditar el desglose de horas o deducciones.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-xs text-slate-500 font-medium whitespace-nowrap">Mostrar semanas:</label>
+          <input
+            type="number"
+            [(ngModel)]="cantSemanas"
+            min="1"
+            max="52"
+            class="w-20 px-2 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            (click)="aplicarFiltroSemanas()"
+            class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors"
+          >
+            Buscar
+          </button>
+        </div>
       </div>
 
       <div class="overflow-x-auto">
@@ -199,7 +217,7 @@
                 <tr class="text-slate-700">
                   <td class="py-3 font-medium">{{ ded.nombre }}</td>
                   <td class="py-3 text-center text-slate-500">
-                    {{ ded.porcentaje ? ded.porcentaje + '%' : 'Fijo' }}
+                    {{ ded.esPorcentual ? (ded.valor * 100 | number:'1.0-2') + '%' : 'Fijo' }}
                   </td>
                   <td class="py-3 text-right font-semibold text-rose-600">-¢{{ ded.monto }}</td>
                 </tr>

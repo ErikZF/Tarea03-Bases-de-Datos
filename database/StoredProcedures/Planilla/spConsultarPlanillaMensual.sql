@@ -13,6 +13,7 @@ BEGIN TRY
         PM.id
         , M.FechaInicio
         , M.FechaFin
+        , CONCAT(DATENAME(MONTH, M.FechaInicio), ' ', YEAR(M.FechaInicio)) AS Mes
         , PM.SalarioBruto
         , PM.TotalDeducciones
         , PM.SalarioNeto
