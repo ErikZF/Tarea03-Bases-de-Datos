@@ -9,23 +9,27 @@ BEGIN TRY
 
     SET @outResultCode = 0;
 
-    -- Detalle por dia, hora entrada, salida y movimientos generados
     SELECT
         MA.Fecha
         , MA.HoraEntrada
         , MA.HoraSalida
-        , TM.Nombre AS TipoMovimiento
-        , TM.Accion
-        , MP.Monto
-        , MP.NuevoSaldo
+        , ISNULL(SUM(CASE WHEN TM.id = 1 THEN MP.Monto ELSE 0 END), 0) AS MontoOrdinario
+        , CAST(ISNULL(SUM(CASE WHEN TM.id = 1 THEN MP.Monto ELSE 0 END), 0) / NULLIF(P.SalarioXHora, 0) AS INT) AS HorasOrdinarias
+        , ISNULL(SUM(CASE WHEN TM.id = 2 THEN MP.Monto ELSE 0 END), 0) AS MontoExtra
+        , CAST(ISNULL(SUM(CASE WHEN TM.id = 2 THEN MP.Monto ELSE 0 END), 0) / NULLIF(P.SalarioXHora * 1.5, 0) AS INT) AS HorasExtra
+        , ISNULL(SUM(CASE WHEN TM.id = 3 THEN MP.Monto ELSE 0 END), 0) AS MontoDobles
+        , CAST(ISNULL(SUM(CASE WHEN TM.id = 3 THEN MP.Monto ELSE 0 END), 0) / NULLIF(P.SalarioXHora * 2.0, 0) AS INT) AS HorasDobles
     FROM dbo.Comprobante AS C
     INNER JOIN dbo.ComprobanteHora AS CH ON (CH.idComprobante = C.id)
     INNER JOIN dbo.MarcaAsistencia AS MA ON (MA.id = CH.idMarcaAsistencia)
     INNER JOIN dbo.MovPlanilla AS MP ON (MP.idComprobante = C.id)
     INNER JOIN dbo.TipoMovimiento AS TM ON (TM.id = MP.idTipoMovimiento)
+    INNER JOIN dbo.Empleado AS E ON (E.id = MA.idEmpleado)
+    INNER JOIN dbo.Puesto AS P ON (P.id = E.idPuesto)
     WHERE (C.idPlanillaSemanal = @inIdPlanillaSemanal)
         AND (C.Tipo = 'H')
-    ORDER BY MA.Fecha, MA.HoraEntrada, TM.id;
+    GROUP BY MA.Fecha, MA.HoraEntrada, MA.HoraSalida, P.SalarioXHora
+    ORDER BY MA.Fecha, MA.HoraEntrada;
 
 END TRY
 BEGIN CATCH
